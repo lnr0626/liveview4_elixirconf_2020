@@ -103,16 +103,29 @@ defmodule Memento.Library do
   end
 
   def first() do
-    1
+    from(Passage)
+    |> limit(1)
+    |> select([p], p.id)
+    |> Repo.one()
+  end
+
+  def last() do
+    from(Passage)
+    |> order_by(desc: :id)
+    |> limit(1)
+    |> select([p], p.id)
+    |> Repo.one()
   end
 
   def next(id) do
-    count = Repo.aggregate(Passage, :count)
-    rem(id, count) + 1
+    from(p in Passage, order_by: :id, where: p.id > ^id, select: p.id, limit: 1)
+    |> Repo.one()
+    |> Kernel.||(first())
   end
 
   def previous(id) do
-    count = Repo.aggregate(Passage, :count)
-    rem(id - 2 + count, count) + 1
+    from(p in Passage, order_by: [desc: :id], where: p.id < ^id, select: p.id, limit: 1)
+    |> Repo.one()
+    |> Kernel.||(last())
   end
 end

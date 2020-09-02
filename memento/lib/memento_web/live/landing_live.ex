@@ -64,6 +64,6 @@ defmodule MementoWeb.LandingLive do
   end
 
   def handle_event("select-click", _meta, socket) do
-    {:noreply, push_redirect(socket, to: "/game/#{socket.assigns.passage_id}")}
+    {:noreply, push_redirect(socket, to: "/erase/#{socket.assigns.passage_id}")}
   end
 end
